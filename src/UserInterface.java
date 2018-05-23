@@ -4,15 +4,21 @@
  * @author
  * @version
  */
-public class UserInterface
+public class UserInterface implements Runnable
 {
-    public static void load()
+    private Thread thread;
+    
+    public void run()
     {
-        
+        //GUI code goes here
     }
     
-    public static void close()
+    public void start()
     {
-        
+        if (thread == null)
+        {
+            thread = new Thread(this, "GUI");
+            thread.start();
+        }
     }
 }
