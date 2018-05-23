@@ -1,13 +1,24 @@
+import java.util.*;
 /**
  * 
  * 
- * @author
- * @version
+ * @author Ryan Leahy 
+ * @version 0.1 Alpha build
  */
 public class Backup
 {
-    public static void run()
+    private static List listOfFiles;
+    
+    public static void backup()
     {
-        
+        initialize(); //initialize files to be backed up
+    }
+    
+    /*
+     * Method takes care of initializing static field elements in class
+     */
+    private static void initialize()
+    {
+        listOfFiles = Settings.getFiles();
     }
 }
