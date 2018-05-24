@@ -1,13 +1,14 @@
 /**
+ *  Driver class for program.
  * 
- * 
- * @author
- * @version
+ * @author   Kevin Cruse
+ * @version  1.0
  */
 public class Main
 {
     public static void main(String[] args)
     {
-        
+        UserInterface gui = new UserInterface();
+        gui.start();
     }
 }

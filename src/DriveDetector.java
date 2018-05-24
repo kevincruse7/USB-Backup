@@ -1,3 +1,5 @@
+import java.io.File;
+
 /**
  * 
  * 
@@ -6,5 +8,8 @@
  */
 public class DriveDetector
 {
-    
+    public static File getDrive()
+    {
+        return null;
+    }
 }
