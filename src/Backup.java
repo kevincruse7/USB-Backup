@@ -8,8 +8,9 @@ import java.util.*;
 public class Backup
 {
     private static List listOfFiles;
+    private static boolean noError;
     
-    public static void backup()
+    public static boolean run()
     {
         initialize(); //initialize files to be backed up
         checkIfBackup(); //sees which files need to be backed up
@@ -18,6 +19,7 @@ public class Backup
         changeExtension(); //changes the extensions back to normal if the above executes without issue
         changeModified(); //changes the last modified time to match the files on the usb
         //CALL SOMETHING TO LET THE UI KNOW THAT YOU FINISHED
+        return noError;
     }
     
     /*
@@ -26,6 +28,7 @@ public class Backup
     private static void initialize()
     {
         copyList(Settings.getFiles()); //gets the list of files from the usb
+        noError = true;
     }
     
     /*
@@ -34,7 +37,13 @@ public class Backup
      */
     private static void copyList(List listFromUSB)
     {
+        Iterator iter = listFromUSB.iterator();
+        listOfFiles = new LinkedList();
         
+        while (iter.hasNext())
+        {
+            listOfFiles.add(iter.next()); 
+        }
     }
     
     /*
