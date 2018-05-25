@@ -1,3 +1,4 @@
+import java.io.File;
 import java.util.List;
 
 /**
@@ -8,17 +9,22 @@ import java.util.List;
  */
 public class Settings
 {
-    public static void setFiles(String id)
+    public static void setDirectory(File dir)
     {
         
     }
     
-    public static void setFiles(String id, List files)
+    public static File getDirectory()
+    {
+        return null;
+    }
+    
+    public static void setFiles(List<File> files)
     {
         
     }
     
-    public static List getFiles()
+    public static List<File> getFiles()
     {
         return null;
     }
