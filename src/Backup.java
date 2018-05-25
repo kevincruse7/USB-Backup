@@ -1,4 +1,6 @@
 import java.util.*;
+import java.io.*;
+import java.nio.*;
 /**
  * Class takes care of backing up the files with built in recovery
  * 
@@ -8,6 +10,7 @@ import java.util.*;
 public class Backup
 {
     private static List listOfFiles;
+    private static File backupDirectory;
     private static boolean noError;
     
     public static boolean run()
@@ -28,6 +31,7 @@ public class Backup
     private static void initialize()
     {
         copyList(Settings.getFiles()); //gets the list of files from the usb
+        backupDirectory = Settings.getDirectory(); //gets the directory of where to put all the backed up files
         noError = true;
     }
     
@@ -51,7 +55,18 @@ public class Backup
      */
     private static void createDirs()
     {
-        
+         String dir; //holds the directory to try and create
+         String root; //holds the root to be removed from the path
+         File current; //holds the file where the path is being extracted from
+         Iterator iter = listOfFiles.iterator();
+         Object path;
+         
+         while (iter.hasNext())
+         { 
+            current = (File)iter.next();
+            path = current.toPath(); //puts the full directory into the usb
+            //path = path.subpath(0, (Path)path.getNameCount()); 
+         }
     }
     
     /*
