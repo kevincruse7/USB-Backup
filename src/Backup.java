@@ -6,8 +6,8 @@
  */
 public class Backup
 {
-    public static void run()
+    public static boolean run()
     {
-        
+        return false;
     }
 }
