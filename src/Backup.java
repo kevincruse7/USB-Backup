@@ -1,6 +1,6 @@
 import java.util.*;
 import java.io.*;
-import java.nio.*;
+import java.nio.file.*;
 /**
  * Class takes care of backing up the files with built in recovery
  * 
@@ -59,13 +59,27 @@ public class Backup
          String root; //holds the root to be removed from the path
          File current; //holds the file where the path is being extracted from
          Iterator iter = listOfFiles.iterator();
-         Object path;
+         Path filePath; 
          
          while (iter.hasNext())
          { 
             current = (File)iter.next();
-            path = current.toPath(); //puts the full directory into the usb
-            //path = path.subpath(0, (Path)path.getNameCount()); 
+            filePath = current.toPath(); //puts the full directory into the usb
+            root = filePath.getRoot().toString(); //say the file is E:\User\text.txt it will hold E:
+            dir = filePath.subpath(0, filePath.getNameCount() - 1).toString(); //gets up to file so say the file is E:\User\text.txt it gets E:\User
+            dir = dir.substring(dir.indexOf(root) + root.length()); //removes root from the file path say you have E:\User at this point now you only have User
+            dir = backupDirectory.getAbsolutePath() + dir; //say the path for the hard drive is C:\test\USB and now the files in the filePath is \User now you have C:\test\USB\User
+            filePath = Paths.get(dir);
+            try
+            {
+                Files.createDirectories(filePath);
+            }
+            catch (IOException e)
+            {
+                noError = false;
+                System.out.println("Failed to create directories on target drive");
+                System.exit(0); //for now crash the program, should probably change later
+            }
          }
     }
     
