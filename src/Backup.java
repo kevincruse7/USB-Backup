@@ -13,6 +13,12 @@ public class Backup
     private static File backupDirectory;
     private static boolean noError;
     
+    /**
+     * Method accomplishes the backup process, all you got to do is call it and it will take care of everything
+     * 
+     * @param none
+     * @return boolean that returns true if the backup process executed without issue
+     */
     public static boolean run()
     {
         initialize(); //initialize files to be backed up
@@ -58,8 +64,8 @@ public class Backup
          String dir; //holds the directory to try and create
          String root; //holds the root to be removed from the path
          File current; //holds the file where the path is being extracted from
-         Iterator iter = listOfFiles.iterator();
-         Path filePath; 
+         Iterator iter = listOfFiles.iterator(); //iterator to traverse through the list of files to back up
+         Path filePath; //intermediate between File objects and Strings
          
          while (iter.hasNext())
          { 
@@ -91,7 +97,31 @@ public class Backup
      */
     private static void checkIfBackup()
     {
+        String dir; //holds the directory to try and create
+        String root; //holds the root to be removed from the path
+        File currentUSB , currentHD; //holds the file coming off the list and also holds the file that already exists on the hard drive
+        Iterator iter = listOfFiles.iterator(); //iterator to traverse through the list of files to back up
+        Path filePath; //intermediate between File objects and Strings
         
+        while (iter.hasNext())
+        { 
+           currentUSB = (File)iter.next();
+           filePath = currentUSB.toPath(); //puts the full directory into the usb
+           root = filePath.getRoot().toString(); //say the file is E:\User\text.txt it will hold E:
+           dir = filePath.subpath(0, filePath.getNameCount()).toString(); //gets the whole files address
+           dir = dir.substring(dir.indexOf(root) + root.length()); //removes root from the file path say you have E:\User\file.txt at this point now you only have User\file.txt
+           dir = backupDirectory.getAbsolutePath() + dir; //say the path for the hard drive is C:\test\USB and now the files in the filePath is \User\file.txt now you have C:\test\USB\User\file.txt
+           filePath = Paths.get(dir); //makes the string into an actual path
+           
+           if (Files.exists(filePath)) //if the file trying to be backed up on the hard drive exists
+           {
+               currentHD = filePath.toFile(); //put that file into a File reference
+               if (currentUSB.lastModified() == currentHD.lastModified()) //check if the modified date on both files match
+               {
+                   iter.remove(); //if they do match there is no need to back it up so just remove it from the local list
+               }
+           }
+        }
     }
     
     /*
