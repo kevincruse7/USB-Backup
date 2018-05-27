@@ -1,3 +1,5 @@
+import net.samuelcampos.usbdrivedetector.USBDeviceDetectorManager;
+
 /**
  *  Driver class for program.
  * 
@@ -8,7 +10,9 @@ public class Main
 {
     public static void main(String[] args)
     {
-        UserInterface gui = new UserInterface();
-        gui.start();
+        USBDeviceDetectorManager manager = new USBDeviceDetectorManager();
+        DriveDetector detector = new DriveDetector();
+        
+        manager.addDriveListener(detector);
     }
 }
