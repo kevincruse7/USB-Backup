@@ -5,11 +5,11 @@ import java.nio.file.*;
  * Class takes care of backing up the files with built in recovery
  * 
  * @author Ryan Leahy 
- * @version 0.1 Alpha build
+ * @version 0.5 Beta build
  */
 public class Backup
 {
-    private static List listOfFiles;
+    private static List listOfFiles, filesCreated;
     private static File backupDirectory;
     private static boolean noError;
     
@@ -23,10 +23,18 @@ public class Backup
     {
         initialize(); //initialize files to be backed up
         checkIfBackup(); //sees which files need to be backed up
-        createDirs(); //creates the directories that are missing from the structure
-        createAndModify(); //puts the files onto the hard drive and saves them with .BAk
-        changeExtension(); //changes the extensions back to normal if the above executes without issue
-        changeModified(); //changes the last modified time to match the files on the usb
+        try
+        {
+            createDirs(); //creates the directories that are missing from the structure
+            createAndModify(); //puts the files onto the hard drive and saves them with .BAk
+            changeExtension(); //changes the extensions back to normal if the above executes without issue
+            changeModified(); //changes the last modified time to match the files on the usb
+        }
+        catch (IOException e)
+        {
+            System.out.println("Backup experienced an error: " + e.getMessage()); //prints out error message
+            noError = false; //sets noError to false to indicate to the UI that an error occured
+        }
         
         return noError;
     }
@@ -38,6 +46,8 @@ public class Backup
     {
         copyList(Settings.getFiles()); //gets the list of files from the usb
         backupDirectory = Settings.getDirectory(); //gets the directory of where to put all the backed up files
+        listOfFiles = new LinkedList(); //linked list to store a copy of all the files passed from the Settings class
+        filesCreated = new LinkedList(); //linked list to store all the files that were created so we can go through and delete the others after it successfully backs up and delete the others and change the file names
         noError = true;
     }
     
@@ -48,7 +58,6 @@ public class Backup
     private static void copyList(List listFromUSB)
     {
         Iterator iter = listFromUSB.iterator();
-        listOfFiles = new LinkedList();
         
         while (iter.hasNext())
         {
@@ -59,7 +68,7 @@ public class Backup
     /*
      * Method takes care of creating the folder hierarchy inside the destination folder to maintain the higherarchy that is in the usb
      */
-    private static void createDirs()
+    private static void createDirs() throws IOException
     {
          String dir; //holds the directory to try and create
          String root; //holds the root to be removed from the path
@@ -82,9 +91,7 @@ public class Backup
             }
             catch (IOException e)
             {
-                noError = false;
-                System.out.println("Failed to create directories on target drive");
-                System.exit(0); //for now crash the program, should probably change later
+                throw new IOException("Failed to create directories on target drive");
             }
          }
     }
@@ -131,18 +138,73 @@ public class Backup
      * and if the method can fully execute without catching any exceptions the method finishes, if an exception occurs
      * all of the backups are deleted and the method throws an exception.
      */
-    private static void createAndModify()
+    private static void createAndModify() throws IOException
     {
+        String dir; //holds the directory to try and create
+        String root; //holds the root to be removed from the path
+        File currentUSB , currentHD; //holds the file coming off the list and also holds the file that already exists on the hard drive
+        Iterator fileListIter = listOfFiles.iterator(); //iterator to traverse through the list of files to back up
+        Path filePath; //intermediate between File objects and Strings
+        Iterator filesCreatedIter = filesCreated.iterator(); //iterator for the list that keeps track of the files created, will be used in an event of an error or just to go through and change the names
         
+        while (fileListIter.hasNext())
+        { 
+           currentUSB = (File)fileListIter.next();
+           filePath = currentUSB.toPath(); //puts the full directory into the usb
+           root = filePath.getRoot().toString(); //say the file is E:\User\text.txt it will hold E:
+           dir = filePath.subpath(0, filePath.getNameCount()).toString(); //gets the whole files address
+           dir = dir.substring(dir.indexOf(root) + root.length()); //removes root from the file path say you have E:\User\file.txt at this point now you only have User\file.txt
+           dir = backupDirectory.getAbsolutePath() + dir + ".BAK"; //say the path for the hard drive is C:\test\USB and now the files in the filePath is \User\file.txt now you have C:\test\USB\User\file.txt.BAK
+           filePath = Paths.get(dir); //makes the string into an actual path
+           
+           try
+           {
+               filesCreated.add(Files.createFile(filePath)); //creates a blank .BAK file on hard drive and adds the path to a linked list storing all the paths
+               Files.copy(currentUSB.toPath(), filePath); //copies file from the usb to the just made backup
+           }
+           catch (IOException e) //if an exception is caught then the program will delete all the .BAK files created and tell the user an error occured and for right now crash the program
+           {
+               while (filesCreatedIter.hasNext()) //while loop to delete the files
+               {
+                   try
+                   {
+                       Files.delete((Path)filesCreatedIter.next());
+                   }
+                   catch (IOException e2) //honestly if another error is thrown at this point something has gone really wrong so there really isn't any way to recover
+                   {
+                       throw new IOException("Failed when trying to recover from creating and copying files to target drive");
+                   }
+               }
+               throw new IOException("Failed to create and copy files to target drive");
+           }
+        }
     }
     
     /*
-     * This method takes care of deleting all the .BAK from the files name so it can function as normal and 
-     * then deletes the old files
+     * This method takes care of deleting all the .BAK files and copying the contents of the BAK into the original before it gets deleted
      */
-    private static void changeExtension()
+    private static void changeExtension() throws IOException
     {
+        String copyStr; //String that will hold the path of the file to copy once the file path has been worked out
+        Path copyPath, curPath; //holds the actual path of the file to copy the .BAK to
+        Iterator filesCreatedIter = filesCreated.iterator(); //iterator for the files created used to help copy and delete the bak
         
+        while (filesCreatedIter.hasNext())
+        {
+            curPath = (Path)filesCreatedIter.next(); //puts the path into a reference so I can do my work mwahahahaha
+            copyStr = curPath.toString();
+            copyStr = copyStr.substring(0, copyStr.indexOf(".BAK")); //removes the .BAK from the string
+            copyPath = Paths.get(copyStr); //puts the string into the path
+            try
+            {
+                Files.copy(curPath, copyPath); //copy the .BAK into the original
+                Files.delete(curPath); //delete the .BAK
+            }
+            catch (IOException e)
+            {
+                throw new IOException("Faled to copy contents of .BAK files to destination files and remove the .BAK files");
+            }
+        }
     }
     
     /*
@@ -150,8 +212,17 @@ public class Backup
      * if an exception is caught it will change all the times to match the beginning of the epoch so that all the files will be
      * re backed up next time it's plugged in
      */
-    private static void changeModified()
+    private static void changeModified() throws IOException
     {
+        Iterator filesTargetIter = filesCreated.iterator(), filesSourceIter = listOfFiles.iterator();
+        Path filesTargetPath, filesSourcePath;
         
+        while (filesTargetIter.hasNext()) 
+        {
+            filesTargetPath = (Path)filesTargetIter.next();
+            filesSourcePath = ((File)filesSourceIter.next()).toPath();
+            
+            Files.setLastModifiedTime(filesTargetPath, Files.getLastModifiedTime(filesSourcePath)); //this line gets the last modified date from the usb and writes it to the hard drive
+        }
     }
 }
