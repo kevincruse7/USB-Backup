@@ -1,6 +1,7 @@
 import java.util.*;
 import java.io.*;
 import java.nio.file.*;
+import java.nio.file.attribute.FileTime;
 /**
  * Class takes care of backing up the files with built in recovery
  * 
@@ -221,8 +222,26 @@ public class Backup
         {
             filesTargetPath = (Path)filesTargetIter.next();
             filesSourcePath = ((File)filesSourceIter.next()).toPath();
-            
-            Files.setLastModifiedTime(filesTargetPath, Files.getLastModifiedTime(filesSourcePath)); //this line gets the last modified date from the usb and writes it to the hard drive
+            try
+            {
+                Files.setLastModifiedTime(filesTargetPath, Files.getLastModifiedTime(filesSourcePath)); //this line gets the last modified date from the usb and writes it to the hard drive
+            }
+            catch (IOException e)
+            {
+                filesTargetIter = filesCreated.iterator();
+                while (filesTargetIter.hasNext()) //this block will set all the file times to the first epoch time so all the files can be re backed up
+                {
+                    try
+                    {
+                        Files.setLastModifiedTime((Path)filesTargetIter.next(), FileTime.fromMillis(0));
+                    }
+                    catch (IOException e2) //once again if this somehow happens the user is kind of on their own
+                    {
+                        throw new IOException("Failed to set last modified date to beginning of epoch after initially failing to set the modified date from the usb, recommended to delete backup and rerun program");
+                    }
+                }
+                throw new IOException("Failed to set last modified date for the files from the usb");
+            }
         }
     }
 }
