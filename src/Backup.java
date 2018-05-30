@@ -32,6 +32,7 @@ public class Backup
     {
         initialize(); //initialize files to be backed up
         checkIfBackup(); //sees which files need to be backed up
+        
         try
         {
             createDirs(); //creates the directories that are missing from the structure
@@ -91,6 +92,7 @@ public class Backup
             dir = dir.substring(dir.indexOf(root) + root.length()); //removes root from the file path say you have E:\User at this point now you only have User
             dir = backupDirectory.getAbsolutePath() + dir; //say the path for the hard drive is C:\test\USB and now the files in the filePath is \User now you have C:\test\USB\User
             filePath = Paths.get(dir);
+            
             try
             {
                 Files.createDirectories(filePath);
@@ -129,6 +131,7 @@ public class Backup
            if (Files.exists(filePath)) //if the file trying to be backed up on the hard drive exists
            {
                currentHD = filePath.toFile(); //put that file into a File reference
+               
                if (currentUSB.lastModified() == currentHD.lastModified()) //check if the modified date on both files match
                {
                    iter.remove(); //if they do match there is no need to back it up so just remove it from the local list
@@ -181,6 +184,7 @@ public class Backup
                        throw new IOException("Failed when trying to recover from creating and copying files to target drive");
                    }
                }
+               
                throw new IOException("Failed to create and copy files to target drive");
            }
         }
@@ -201,6 +205,7 @@ public class Backup
             copyStr = curPath.toString();
             copyStr = copyStr.substring(0, copyStr.indexOf(".BAK")); //removes the .BAK from the string
             copyPath = Paths.get(copyStr); //puts the string into the path
+            
             try
             {
                 Files.copy(curPath, copyPath); //copy the .BAK into the original
@@ -227,6 +232,7 @@ public class Backup
         {
             filesTargetPath = (Path)filesTargetIter.next();
             filesSourcePath = ((File)filesSourceIter.next()).toPath();
+            
             try
             {
                 Files.setLastModifiedTime(filesTargetPath, Files.getLastModifiedTime(filesSourcePath)); //this line gets the last modified date from the usb and writes it to the hard drive
@@ -234,6 +240,7 @@ public class Backup
             catch (IOException e)
             {
                 filesTargetIter = filesCreated.iterator();
+                
                 while (filesTargetIter.hasNext()) //this block will set all the file times to the first epoch time so all the files can be re backed up
                 {
                     try
@@ -245,6 +252,7 @@ public class Backup
                         throw new IOException("Failed to set last modified date to beginning of epoch after initially failing to set the modified date from the usb, recommended to delete backup and rerun program");
                     }
                 }
+                
                 throw new IOException("Failed to set last modified date for the files from the usb");
             }
         }
