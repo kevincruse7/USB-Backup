@@ -1,7 +1,7 @@
 import java.io.File;
 
-import net.samuelcampos.usbdrivedetector.events.IUSBDriveListener;
-import net.samuelcampos.usbdrivedetector.events.USBStorageEvent;
+import net.samuelcampos.usbdrivedetector.*;
+import net.samuelcampos.usbdrivedetector.events.*;
 
 /**
  * 
@@ -11,13 +11,14 @@ import net.samuelcampos.usbdrivedetector.events.USBStorageEvent;
  */
 public class DriveDetector implements IUSBDriveListener
 {
-    public File getDrive()
-    {
-        return null;
-    }
-    
     public void usbDriveEvent(USBStorageEvent event)
     {
-        System.out.println(event.getStorageDevice().getRootDirectory());
+        File device;
+        
+        if (event.getEventType().equals(DeviceEventType.CONNECTED))
+        {
+            device = event.getStorageDevice().getRootDirectory();
+            
+        }
     }
 }
