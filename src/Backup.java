@@ -6,13 +6,14 @@ import java.nio.file.attribute.FileTime;
  * Class takes care of backing up the files with built in recovery
  * 
  * @author Ryan Leahy 
- * @version 0.5 Beta build
+ * @version 0.6 Beta build
  */
 public class Backup
 {
     private List listOfFiles, filesCreated;
     private File backupDirectory;
     private boolean noError;
+    private String errorMessage;
     
     /**
      * Empty constructor for backup class, all initialization is handled in the run() method call, so if you want to reinitialize just call run again
@@ -40,11 +41,22 @@ public class Backup
         }
         catch (IOException e)
         {
-            System.out.println("Backup experienced an error: " + e.getMessage()); //prints out error message
+            errorMessage = e.getMessage(); //sets the error message that the ui can call
             noError = false; //sets noError to false to indicate to the UI that an error occured
         }
         
         return noError;
+    }
+    
+    /**
+     * Method returns the error message if an error occurs during backup. If no error occurs the String will return null
+     * 
+     * @param none
+     * @return String
+     */
+    public String getErrorMessage()
+    {
+        return errorMessage;
     }
     
     /*
@@ -56,6 +68,7 @@ public class Backup
         listOfFiles = Settings.getFiles(); //linked list to store a copy of all the files passed from the Settings class
         filesCreated = new LinkedList(); //linked list to store all the files that were created so we can go through and delete the others after it successfully backs up and delete the others and change the file names
         noError = true;
+        errorMessage = null;
     }
     
     /*
