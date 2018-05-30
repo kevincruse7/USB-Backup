@@ -10,9 +10,16 @@ import java.nio.file.attribute.FileTime;
  */
 public class Backup
 {
-    private static List listOfFiles, filesCreated;
-    private static File backupDirectory;
-    private static boolean noError;
+    private List listOfFiles, filesCreated;
+    private File backupDirectory;
+    private boolean noError;
+    
+    /**
+     * Empty constructor for backup class, all initialization is handled in the run() method call, so if you want to reinitialize just call run again
+     */
+    public Backup()
+    {
+    }
     
     /**
      * Method accomplishes the backup process, all you got to do is call it and it will take care of everything
@@ -20,7 +27,7 @@ public class Backup
      * @param none
      * @return boolean that returns true if the backup process executed without issue
      */
-    public static boolean run()
+    public boolean run()
     {
         initialize(); //initialize files to be backed up
         checkIfBackup(); //sees which files need to be backed up
@@ -43,33 +50,18 @@ public class Backup
     /*
      * Method takes care of initializing static field elements in class
      */
-    private static void initialize()
+    private void initialize()
     {
-        copyList(Settings.getFiles()); //gets the list of files from the usb
         backupDirectory = Settings.getDirectory(); //gets the directory of where to put all the backed up files
-        listOfFiles = new LinkedList(); //linked list to store a copy of all the files passed from the Settings class
+        listOfFiles = Settings.getFiles(); //linked list to store a copy of all the files passed from the Settings class
         filesCreated = new LinkedList(); //linked list to store all the files that were created so we can go through and delete the others after it successfully backs up and delete the others and change the file names
         noError = true;
     }
     
     /*
-     * Method creates a local copy of the list of files to backup so this class can modify the files without affecting
-     * the list in other classes
-     */
-    private static void copyList(List listFromUSB)
-    {
-        Iterator iter = listFromUSB.iterator();
-        
-        while (iter.hasNext())
-        {
-            listOfFiles.add(iter.next()); 
-        }
-    }
-    
-    /*
      * Method takes care of creating the folder hierarchy inside the destination folder to maintain the higherarchy that is in the usb
      */
-    private static void createDirs() throws IOException
+    private void createDirs() throws IOException
     {
          String dir; //holds the directory to try and create
          String root; //holds the root to be removed from the path
@@ -103,7 +95,7 @@ public class Backup
      * Currently the method of checking to see if it needs to be backed up is check if the last modified dates match
      * if they do the file is removed from the list
      */
-    private static void checkIfBackup()
+    private void checkIfBackup()
     {
         String dir; //holds the directory to try and create
         String root; //holds the root to be removed from the path
@@ -139,7 +131,7 @@ public class Backup
      * and if the method can fully execute without catching any exceptions the method finishes, if an exception occurs
      * all of the backups are deleted and the method throws an exception.
      */
-    private static void createAndModify() throws IOException
+    private void createAndModify() throws IOException
     {
         String dir; //holds the directory to try and create
         String root; //holds the root to be removed from the path
@@ -184,7 +176,7 @@ public class Backup
     /*
      * This method takes care of deleting all the .BAK files and copying the contents of the BAK into the original before it gets deleted
      */
-    private static void changeExtension() throws IOException
+    private void changeExtension() throws IOException
     {
         String copyStr; //String that will hold the path of the file to copy once the file path has been worked out
         Path copyPath, curPath; //holds the actual path of the file to copy the .BAK to
@@ -213,7 +205,7 @@ public class Backup
      * if an exception is caught it will change all the times to match the beginning of the epoch so that all the files will be
      * re backed up next time it's plugged in
      */
-    private static void changeModified() throws IOException
+    private void changeModified() throws IOException
     {
         Iterator filesTargetIter = filesCreated.iterator(), filesSourceIter = listOfFiles.iterator();
         Path filesTargetPath, filesSourcePath;
