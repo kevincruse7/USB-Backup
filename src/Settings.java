@@ -3,6 +3,10 @@ import java.util.List;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.util.ArrayList;
+
 /**
  * 
  * 
@@ -11,45 +15,54 @@ import java.io.IOException;
  */
 public class Settings
 {
-    public static void setDirectory(File dir)
-    {
-        //stores ID in settings file on the computer, backs up everything
-    }
-    
-    public static File getDirectory()
-    {
-        return null;
-    }
-    
-    public static void setFiles(List<File> files) throws IOException
+    public static void addFiles(List<File> files) throws IOException
     {
         //backs up specific file objects passed         
-        FileWriter writer = new FileWriter("settings.txt");//write to text file
+        //write to text file
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("settings.txt"));
         
         //traverse list of file objects and write each one to the settings file
-        for (File item: files)
+        for (File item : files)
         {
-            writer.write(item.toString());
+            bufferedWriter.append(item.toString());
+            bufferedWriter.newLine();
         }
-        writer.close();
+        
+        bufferedWriter.newLine();
+        bufferedWriter.close();
+    }
+    /**
+     * //read in everything to do processing(list of file objects), delete old settings file, process
+        //traverse list(for each of the file list passed) use .contains()
+        //see if list you just read in from settings contains anything on the list
+        //for everything in list passed, delete corresponding file in the ones 
+        //use .remove on the list you just read in 
+       
+        
+        //once teh thing read in has been processed, delete the old settings file
+        //create the new settings file with the processed things
+     */
+    public static void removeFiles(List<File> files) throws IOException
+    {
+        //read in from settings file and put it into an arraylist of file objects
+        File
     }
     
     public static List<File> getFiles() throws IOException
     {
         //gets all the file names from settings file and puts it in list, if none returns null
-        FileReader reader = new FileReader("settings.txt");//if file reader fails it will throw exception
-        List<String> names;
+        //if file reader fails it will throw exception
+        List<File> names = new ArrayList<>();
+        BufferedReader bufferedReader = new BufferedReader(new FileReader("settings.txt"));
+        String line = null;
         
-        if (reader.read() == -1)
+        line = bufferedReader.readLine();
+        while (line != null)
         {
-            return null;
-        }
-        else
-        {
-            
+            names.add(new File(line));
         }
         
-        
-        return null;
+        bufferedReader.close();
+        return names;
     }
 }
