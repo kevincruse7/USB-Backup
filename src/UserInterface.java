@@ -21,4 +21,9 @@ public class UserInterface implements Runnable
             thread.start();
         }
     }
+    
+    public void sendNotification(String message)
+    {
+        
+    }
 }

@@ -10,9 +10,10 @@ public class Main
 {
     public static void main(String[] args)
     {
+        UserInterface ui = new UserInterface();
         USBDeviceDetectorManager manager = new USBDeviceDetectorManager();
-        DriveDetector detector = new DriveDetector();
         
-        manager.addDriveListener(detector);
+        ui.start();
+        manager.addListener(new DriveDetector(ui));
     }
 }
