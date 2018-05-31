@@ -12,8 +12,6 @@ public class Backup
 {
     private List listOfFiles, filesCreated;
     private File backupDirectory;
-    private boolean noError;
-    private String errorMessage;
     
     /**
      * Empty constructor for backup class, all initialization is handled in the run() method call, so if you want to reinitialize just call run again
@@ -28,7 +26,7 @@ public class Backup
      * @param none
      * @return boolean that returns true if the backup process executed without issue
      */
-    public boolean run()
+    public void run() throws IOException
     {
         initialize(); //initialize files to be backed up
         checkIfBackup(); //sees which files need to be backed up
@@ -42,22 +40,8 @@ public class Backup
         }
         catch (IOException e)
         {
-            errorMessage = e.getMessage(); //sets the error message that the ui can call
-            noError = false; //sets noError to false to indicate to the UI that an error occured
+            throw new IOException(e.getMessage()); //sets the error message that the ui can call
         }
-        
-        return noError;
-    }
-    
-    /**
-     * Method returns the error message if an error occurs during backup. If no error occurs the String will return null
-     * 
-     * @param none
-     * @return String
-     */
-    public String getErrorMessage()
-    {
-        return errorMessage;
     }
     
     /*
@@ -68,8 +52,6 @@ public class Backup
         backupDirectory = Settings.getDirectory(); //gets the directory of where to put all the backed up files
         listOfFiles = Settings.getFiles(); //linked list to store a copy of all the files passed from the Settings class
         filesCreated = new LinkedList(); //linked list to store all the files that were created so we can go through and delete the others after it successfully backs up and delete the others and change the file names
-        noError = true;
-        errorMessage = null;
     }
     
     /*
