@@ -10,27 +10,50 @@ import java.io.BufferedWriter;
 import java.util.ArrayList;
 
 /**
- * 
- * 
+ * Maintains the settings folder
+ *  
  * @ellyce
  * @5-30-18
  */
 public class Settings
 {
     /**
-     * 
+     * returns the directory where the backups should be stored
+     * just the first line of the settings file 
+     * @return the directory where the backups should be stored
      */
-    public static File getDirectory()
+    public static File getDirectory() throws IOException
     {
-        return null;
+        //reads the first line of the settings file
+        BufferedReader bufferedReader = new BufferedReader(new FileReader("settings.txt"));
+        String directory = bufferedReader.readLine();
+        File fileDirectory = new File(directory);
+        
+        return fileDirectory;
     }
     
     /**
-     * 
+     * changes the directory to what is passed
+     * @param the new directory
      */
-    public static void setDirectory(File dir)
+    public static void setDirectory(File dir) throws IOException
     {
+        //changes the first line in the settings file
+        List<File> oldSettings = new ArrayList<>();
+        oldSettings = getFiles(); //arraylist of settings folder
         
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("settings.txt"));
+        
+        //remove first thing in settings
+        oldSettings.remove(0);
+        //add in new directory
+        oldSettings.add(0, dir);
+        
+        //rewrite the arraylist to settings
+        for (File data: oldSettings)
+        {
+            bufferedWriter.append(data.toString());
+        }
     }
     
     /**
