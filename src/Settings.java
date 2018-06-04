@@ -31,6 +31,7 @@ public class Settings
         bufferedWriter.newLine();
         bufferedWriter.close();
     }
+
     /**
      * //read in everything to do processing(list of file objects), delete old settings file, process
         //traverse list(for each of the file list passed) use .contains()

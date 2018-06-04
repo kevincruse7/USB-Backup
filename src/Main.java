@@ -1,13 +1,18 @@
+import net.samuelcampos.usbdrivedetector.USBDeviceDetectorManager;
+
 /**
+ *  Driver class for program.
  * 
- * 
- * @author
- * @version
+ * @author   Kevin Cruse
+ * @version  1.0
  */
 public class Main
 {
     public static void main(String[] args)
     {
+        USBDeviceDetectorManager manager = new USBDeviceDetectorManager();
         
+        manager.addDriveListener(new DriveDetector());
+        UserInterface.launch(args);
     }
 }
