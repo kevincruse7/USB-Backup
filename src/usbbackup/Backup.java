@@ -1,7 +1,10 @@
+package usbbackup;
+
 import java.util.*;
 import java.io.*;
 import java.nio.file.*;
 import java.nio.file.attribute.FileTime;
+
 /**
  * Class takes care of backing up the files with built in recovery
  * 

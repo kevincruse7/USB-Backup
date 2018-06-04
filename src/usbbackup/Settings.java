@@ -1,3 +1,5 @@
+package usbbackup;
+
 import java.io.File;
 import java.util.List;
 import java.io.FileReader;
@@ -15,6 +17,25 @@ import java.util.ArrayList;
  */
 public class Settings
 {
+    /**
+     * 
+     */
+    public static File getDirectory()
+    {
+        return null;
+    }
+    
+    /**
+     * 
+     */
+    public static void setDirectory(File dir)
+    {
+        
+    }
+    
+    /**
+     * 
+     */
     public static void addFiles(List<File> files) throws IOException
     {
         //backs up specific file objects passed         
@@ -46,9 +67,14 @@ public class Settings
     public static void removeFiles(List<File> files) throws IOException
     {
         //read in from settings file and put it into an arraylist of file objects
-        File
+        
     }
     
+    
+    
+    /**
+     * 
+     */
     public static List<File> getFiles() throws IOException
     {
         //gets all the file names from settings file and puts it in list, if none returns null
