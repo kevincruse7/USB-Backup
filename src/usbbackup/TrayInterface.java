@@ -32,7 +32,6 @@ public class TrayInterface
     public TrayInterface(Stage stage) throws AWTException
     {
         SystemTray tray = SystemTray.getSystemTray();
-        stage.show();
         
         PopupMenu menu = new PopupMenu();
         MenuItem open = new MenuItem("Open");
