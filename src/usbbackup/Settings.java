@@ -67,9 +67,6 @@ public class Settings
     public static void removeFiles(List<File> files) throws IOException
     {
         //read in from settings file and put it into an arraylist of file objects
-<<<<<<< HEAD:src/usbbackup/Settings.java
-        
-=======
         List<File> oldSettings = new ArrayList<>();
         oldSettings = getFiles();
         
@@ -87,7 +84,6 @@ public class Settings
             }
         }
         bufferedWriter.close();
->>>>>>> Settings:src/Settings.java
     }
     
     
