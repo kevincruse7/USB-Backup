@@ -40,7 +40,7 @@ public class Settings
     {
         //backs up specific file objects passed         
         //write to text file
-        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("settings.txt"));
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("settings.txt",true));
         
         //traverse list of file objects and write each one to the settings file
         for (File item : files)
@@ -67,7 +67,27 @@ public class Settings
     public static void removeFiles(List<File> files) throws IOException
     {
         //read in from settings file and put it into an arraylist of file objects
+<<<<<<< HEAD:src/usbbackup/Settings.java
         
+=======
+        List<File> oldSettings = new ArrayList<>();
+        oldSettings = getFiles();
+        
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("settings.txt"));
+        
+        
+        //compare list to oldSettings looking for things to remove
+        for (File item : oldSettings)
+        {
+            if (!files.contains(item))//if you don't want to remove it
+            {
+                //write back to settings
+                bufferedWriter.append(item.toString());
+                bufferedWriter.newLine();
+            }
+        }
+        bufferedWriter.close();
+>>>>>>> Settings:src/Settings.java
     }
     
     
@@ -86,7 +106,11 @@ public class Settings
         line = bufferedReader.readLine();
         while (line != null)
         {
-            names.add(new File(line));
+            if ( !line.equals(""))
+            {
+                names.add(new File(line));//only returning non blank lines
+            }
+            line = bufferedReader.readLine();
         }
         
         bufferedReader.close();
