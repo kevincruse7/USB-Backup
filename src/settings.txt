@@ -1,0 +1,7 @@
+/Volumes/drive1
+
+/Volumes/drive2
+/Volumes/drive2/file.txt 
+
+
+
