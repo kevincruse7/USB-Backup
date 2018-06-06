@@ -10,31 +10,56 @@ import java.io.BufferedWriter;
 import java.util.ArrayList;
 
 /**
- * 
- * 
+ * Maintains the settings folder
+ *  
  * @ellyce
  * @5-30-18
  */
 public class Settings
 {
     /**
-     * 
+     * returns the directory where the backups should be stored
+     * just the first line of the settings file 
+     * @return the directory where the backups should be stored
      */
-    public static File getDirectory()
+    public static File getDirectory() throws IOException
     {
-        return null;
-    }
-    
-    /**
-     * 
-     */
-    public static void setDirectory(File dir)
-    {
+        //reads the first line of the settings file
+        BufferedReader bufferedReader = new BufferedReader(new FileReader("settings.txt"));
+        String directory = bufferedReader.readLine();
+        File fileDirectory = new File(directory);
         
+        return fileDirectory;
     }
     
     /**
-     * 
+     * changes the directory to what is passed
+     * @param the new directory
+     */
+    public static void setDirectory(File dir) throws IOException
+    {
+        //changes the first line in the settings file
+        List<File> oldSettings = new ArrayList<>();
+        oldSettings = getFiles(); //arraylist of settings folder
+        
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("settings.txt"));
+        
+        //remove first thing in settings
+        oldSettings.remove(0);
+        //add in new directory
+        oldSettings.add(0, dir);
+        
+        //rewrite the arraylist to settings
+        for (File data: oldSettings)
+        {
+            bufferedWriter.append(data.toString());
+        }
+    }
+    
+    /**
+     *
+     * adds the sent files to the settings file
+     * @param a list of file objects to add
      */
     public static void addFiles(List<File> files) throws IOException
     {
@@ -52,17 +77,9 @@ public class Settings
         bufferedWriter.newLine();
         bufferedWriter.close();
     }
-
     /**
-     * //read in everything to do processing(list of file objects), delete old settings file, process
-        //traverse list(for each of the file list passed) use .contains()
-        //see if list you just read in from settings contains anything on the list
-        //for everything in list passed, delete corresponding file in the ones 
-        //use .remove on the list you just read in 
-       
-        
-        //once teh thing read in has been processed, delete the old settings file
-        //create the new settings file with the processed things
+     * removes all the files from settings that are passed
+     * @param a list of file objects that should be removed
      */
     public static void removeFiles(List<File> files) throws IOException
     {
@@ -87,9 +104,9 @@ public class Settings
     }
     
     
-    
     /**
-     * 
+     * gets all the files from the settings file
+     * @return a list of file objects containing the files from settings
      */
     public static List<File> getFiles() throws IOException
     {
