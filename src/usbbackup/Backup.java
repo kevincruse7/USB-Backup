@@ -17,13 +17,6 @@ public class Backup
     private File backupDirectory;
     
     /**
-     * Empty constructor for backup class, all initialization is handled in the run() method call, so if you want to reinitialize just call run again
-     */
-    public Backup()
-    {
-    }
-    
-    /**
      * Method accomplishes the backup process, all you got to do is call it and it will take care of everything
      * 
      * @param none
