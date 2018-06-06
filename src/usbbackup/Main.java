@@ -49,6 +49,7 @@ public class Main extends Application
         
         manager.addDriveListener(detector);
         initStage();
+        stage.show();
     }
     
     /**

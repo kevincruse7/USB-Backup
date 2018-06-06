@@ -33,24 +33,16 @@ public class Backup
     {
         initialize(); //initialize files to be backed up
         checkIfBackup(); //sees which files need to be backed up
-        
-        try
-        {
-            createDirs(); //creates the directories that are missing from the structure
-            createAndModify(); //puts the files onto the hard drive and saves them with .BAk
-            changeExtension(); //changes the extensions back to normal if the above executes without issue
-            changeModified(); //changes the last modified time to match the files on the usb
-        }
-        catch (IOException e)
-        {
-            throw new IOException(e.getMessage()); //sets the error message that the ui can call
-        }
+        createDirs(); //creates the directories that are missing from the structure
+        createAndModify(); //puts the files onto the hard drive and saves them with .BAk
+        changeExtension(); //changes the extensions back to normal if the above executes without issue
+        changeModified(); //changes the last modified time to match the files on the usb
     }
     
     /*
      * Method takes care of initializing static field elements in class
      */
-    private void initialize()
+    private void initialize() throws IOException
     {
         backupDirectory = Settings.getDirectory(); //gets the directory of where to put all the backed up files
         listOfFiles = Settings.getFiles(); //linked list to store a copy of all the files passed from the Settings class
