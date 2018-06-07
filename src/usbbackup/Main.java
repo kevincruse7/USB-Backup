@@ -56,7 +56,8 @@ public class Main extends Application
      */
     public static void exit(String action, Exception e)
     {
-        System.err.println("An error occurred when " + action + ": " + e.toString() + " - " + e.getMessage() + "\n" + e.getStackTrace());
+        System.err.println("An error occurred when " + action + ": " + e.toString());
+        e.printStackTrace();
         System.exit(1);
     }
     

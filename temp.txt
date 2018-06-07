@@ -1,4 +1,0 @@
-cd Documents\Github\USB-Backup
-
-javac -cp "libraries\slf4j-api-1.7.25.jar;libraries\slf4j-simple-1.7.25.jar;libraries\usbdrivedetector-2.0.4.jar" src\usbbackup\*.java
-java -cp "libraries\slf4j-api-1.7.25.jar;libraries\slf4j-simple-1.7.25.jar;libraries\usbdrivedetector-2.0.4.jar;src" usbbackup.Main

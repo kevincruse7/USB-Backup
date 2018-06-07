@@ -31,8 +31,8 @@ public class Backup
         checkIfBackup(); //sees which files need to be backed up
         createDirs(); //creates the directories that are missing from the structure
         createAndModify(); //puts the files onto the hard drive and saves them with .BAk
-        changeExtension(); //changes the extensions back to normal if the above executes without issue
-        changeModified(); //changes the last modified time to match the files on the usb
+        //changeExtension(); //changes the extensions back to normal if the above executes without issue
+        //changeModified(); //changes the last modified time to match the files on the usb
         Platform.runLater(() -> Main.setStatus("Ready."));
     }
     
@@ -51,29 +51,35 @@ public class Backup
      */
     private void createDirs() throws IOException
     {
-         String dir; //holds the directory to try and create
+         String dir, testDir; //holds the directory to try and create
          String root; //holds the root to be removed from the path
          File current; //holds the file where the path is being extracted from
          Iterator iter = listOfFiles.iterator(); //iterator to traverse through the list of files to back up
          Path filePath; //intermediate between File objects and Strings
          
+         iter.next();
          while (iter.hasNext())
          { 
             current = (File)iter.next();
             filePath = current.toPath(); //puts the full directory into the usb
-            root = filePath.getRoot().toString(); //say the file is E:\User\text.txt it will hold E:
-            dir = filePath.subpath(0, filePath.getNameCount() - 1).toString(); //gets up to file so say the file is E:\User\text.txt it gets E:\User
-            dir = dir.substring(dir.indexOf(root) + root.length()); //removes root from the file path say you have E:\User at this point now you only have User
-            dir = backupDirectory.getAbsolutePath() + dir; //say the path for the hard drive is C:\test\USB and now the files in the filePath is \User now you have C:\test\USB\User
-            filePath = Paths.get(dir);
-            
-            try
+            if(filePath.getNameCount() > 1)
             {
-                Files.createDirectories(filePath);
-            }
-            catch (IOException e)
-            {
-                throw new IOException("Failed to create directories on target drive");
+                root = filePath.getRoot().toString(); //say the file is E:\User\text.txt it will hold E:
+                dir = filePath.subpath(0, (filePath.getNameCount() - 1)).toString(); //gets up to file so say the file is E:\User\text.txt it gets E:\User
+                dir = backupDirectory.getAbsolutePath().toString() + File.separator + dir;
+                filePath = Paths.get(dir); //makes the string into an actual path
+                
+                if(!dir.equals(root))
+                {
+                    try
+                    {
+                        Files.createDirectories(filePath);
+                    }
+                    catch (IOException e)
+                    {
+                        throw new IOException("Failed to create directories on target drive");
+                    }
+                }
             }
          }
     }
@@ -92,25 +98,29 @@ public class Backup
         Iterator iter = listOfFiles.iterator(); //iterator to traverse through the list of files to back up
         Path filePath; //intermediate between File objects and Strings
         
+        iter.next();
         while (iter.hasNext())
         { 
            currentUSB = (File)iter.next();
            filePath = currentUSB.toPath(); //puts the full directory into the usb
-           root = filePath.getRoot().toString(); //say the file is E:\User\text.txt it will hold E:
-           dir = filePath.subpath(0, filePath.getNameCount()).toString(); //gets the whole files address
-           dir = dir.substring(dir.indexOf(root) + root.length()); //removes root from the file path say you have E:\User\file.txt at this point now you only have User\file.txt
-           dir = backupDirectory.getAbsolutePath() + dir; //say the path for the hard drive is C:\test\USB and now the files in the filePath is \User\file.txt now you have C:\test\USB\User\file.txt
-           filePath = Paths.get(dir); //makes the string into an actual path
+           if(filePath.getNameCount() > 1)
+            {
+                root = filePath.getRoot().toString(); //say the file is E:\User\text.txt it will hold E:
+                dir = filePath.subpath(0, (filePath.getNameCount())).toString(); //gets up to file so say the file is E:\User\text.txt it gets E:\User
+                dir = backupDirectory.getAbsolutePath().toString() + File.separator + dir;
+                //System.out.println(dir);
+                filePath = Paths.get(dir); //makes the string into an actual path
            
-           if (Files.exists(filePath)) //if the file trying to be backed up on the hard drive exists
-           {
-               currentHD = filePath.toFile(); //put that file into a File reference
-               
-               if (currentUSB.lastModified() == currentHD.lastModified()) //check if the modified date on both files match
+               if (Files.exists(filePath)) //if the file trying to be backed up on the hard drive exists
                {
-                   iter.remove(); //if they do match there is no need to back it up so just remove it from the local list
+                   currentHD = filePath.toFile(); //put that file into a File reference
+                   
+                   if (currentUSB.lastModified() == currentHD.lastModified()) //check if the modified date on both files match
+                   {
+                       iter.remove(); //if they do match there is no need to back it up so just remove it from the local list
+                   }
                }
-           }
+            }
         }
     }
     
@@ -130,37 +140,43 @@ public class Backup
         Path filePath; //intermediate between File objects and Strings
         Iterator filesCreatedIter = filesCreated.iterator(); //iterator for the list that keeps track of the files created, will be used in an event of an error or just to go through and change the names
         
+        fileListIter.next();
         while (fileListIter.hasNext())
         { 
            currentUSB = (File)fileListIter.next();
            filePath = currentUSB.toPath(); //puts the full directory into the usb
-           root = filePath.getRoot().toString(); //say the file is E:\User\text.txt it will hold E:
-           dir = filePath.subpath(0, filePath.getNameCount()).toString(); //gets the whole files address
-           dir = dir.substring(dir.indexOf(root) + root.length()); //removes root from the file path say you have E:\User\file.txt at this point now you only have User\file.txt
-           dir = backupDirectory.getAbsolutePath() + dir + ".BAK"; //say the path for the hard drive is C:\test\USB and now the files in the filePath is \User\file.txt now you have C:\test\USB\User\file.txt.BAK
-           filePath = Paths.get(dir); //makes the string into an actual path
+           if(filePath.getNameCount() > 1)
+            {
+                root = filePath.getRoot().toString(); //say the file is E:\User\text.txt it will hold E:
+                dir = filePath.subpath(0, (filePath.getNameCount())).toString(); //gets up to file so say the file is E:\User\text.txt it gets E:\User
+                dir = backupDirectory.getAbsolutePath().toString() + File.separator + dir + ".BAK";
+                System.out.println(dir + " " + currentUSB.toPath());
+                filePath = Paths.get(dir); //makes the string into an actual path
            
-           try
-           {
-               filesCreated.add(Files.createFile(filePath)); //creates a blank .BAK file on hard drive and adds the path to a linked list storing all the paths
-               Files.copy(currentUSB.toPath(), filePath); //copies file from the usb to the just made backup
-           }
-           catch (IOException e) //if an exception is caught then the program will delete all the .BAK files created and tell the user an error occured and for right now crash the program
-           {
-               while (filesCreatedIter.hasNext()) //while loop to delete the files
+               try
                {
-                   try
-                   {
-                       Files.delete((Path)filesCreatedIter.next());
-                   }
-                   catch (IOException e2) //honestly if another error is thrown at this point something has gone really wrong so there really isn't any way to recover
-                   {
-                       throw new IOException("Failed when trying to recover from creating and copying files to target drive");
-                   }
+                   filesCreated.add(Files.createFile(filePath)); //creates a blank .BAK file on hard drive and adds the path to a linked list storing all the paths
+                   Files.copy(currentUSB.toPath(), new FileOutputStream(filePath.toFile())); //copies file from the usb to the just made backup
                }
-               
-               throw new IOException("Failed to create and copy files to target drive");
-           }
+               catch (IOException e) //if an exception is caught then the program will delete all the .BAK files created and tell the user an error occured and for right now crash the program
+               {
+                   while (filesCreatedIter.hasNext()) //while loop to delete the files
+                   {
+                       try
+                       {
+                           Path rem = (Path)filesCreatedIter.next();
+                           filesCreatedIter.remove();
+                           Files.delete(rem);
+                       }
+                       catch (IOException e2) //honestly if another error is thrown at this point something has gone really wrong so there really isn't any way to recover
+                       {
+                           throw new IOException("Failed when trying to recover from creating and copying files to target drive");
+                       }
+                   }
+                   
+                   throw new IOException("Failed to create and copy files to target drive");
+               }
+            }
         }
     }
     
@@ -171,6 +187,7 @@ public class Backup
     {
         String copyStr; //String that will hold the path of the file to copy once the file path has been worked out
         Path copyPath, curPath; //holds the actual path of the file to copy the .BAK to
+        File curFile;
         Iterator filesCreatedIter = filesCreated.iterator(); //iterator for the files created used to help copy and delete the bak
         
         while (filesCreatedIter.hasNext())
@@ -179,16 +196,17 @@ public class Backup
             copyStr = curPath.toString();
             copyStr = copyStr.substring(0, copyStr.indexOf(".BAK")); //removes the .BAK from the string
             copyPath = Paths.get(copyStr); //puts the string into the path
+            curFile = curPath.toFile();
             
-            try
-            {
-                Files.copy(curPath, copyPath); //copy the .BAK into the original
-                Files.delete(curPath); //delete the .BAK
-            }
-            catch (IOException e)
+            //try
+            //{
+                Files.move(curPath, copyPath);  
+                //System.out.println(curFile);
+            //}
+            /*catch (IOException e)
             {
                 throw new IOException("Faled to copy contents of .BAK files to destination files and remove the .BAK files");
-            }
+            }*/
         }
     }
     
