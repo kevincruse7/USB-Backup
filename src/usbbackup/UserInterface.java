@@ -82,8 +82,7 @@ public class UserInterface
         }
         catch (IOException e)
         {
-            System.err.println("An error occurred when backing up: " + e.getMessage());
-            System.exit(1);
+            Main.exit("backing up USB drive", e);
         }
     }
 
@@ -153,7 +152,7 @@ public class UserInterface
 
             try
             {
-                if (!Settings.getFiles().containsAll(files))
+                if (Settings.getFiles() != null && !Settings.getFiles().containsAll(files))
                     Settings.addFiles(files);
             }
             catch (IOException e)
@@ -188,7 +187,7 @@ public class UserInterface
 
             try
             {
-                if (!Settings.getFiles().containsAll(files))
+                if (Settings.getFiles() != null && !Settings.getFiles().containsAll(files))
                     Settings.addFiles(files);
             }
             catch (IOException e)
@@ -225,11 +224,10 @@ public class UserInterface
         
         for (File file : sub)
         {
-            if (file.isFile())
-                files.add(file);
+            if (file.isDirectory())
+                searchDir(file, files);
             else
-                if (file.isDirectory())
-                    searchDir(file, files);
+                files.add(file);
         }
     }
 }

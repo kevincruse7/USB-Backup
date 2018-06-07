@@ -74,5 +74,7 @@ public class DriveDetector implements IUSBDriveListener
                 Main.exit("trying to backup USB drive", e);
             }
         }
+        else
+            Platform.runLater(() -> Main.setStatus("Ready."));
     }
 }

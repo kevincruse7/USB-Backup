@@ -24,10 +24,10 @@ import net.samuelcampos.usbdrivedetector.USBDeviceDetectorManager;
  */
 public class Main extends Application
 {
-    private USBDeviceDetectorManager manager;  //
-    private DriveDetector detector;            //
-    private Stage stage;                       //
-    private TrayInterface trayIcon;            //
+    private USBDeviceDetectorManager manager;
+    private DriveDetector detector;
+    private Stage stage;
+    private TrayInterface trayIcon;
     private static UserInterface ui;
     
     public static void main(String[] args)
@@ -56,7 +56,7 @@ public class Main extends Application
      */
     public static void exit(String action, Exception e)
     {
-        System.err.println("An error occurred when " + action + ": " + e.getMessage());
+        System.err.println("An error occurred when " + action + ": " + e.toString() + " - " + e.getMessage() + "\n" + e.getStackTrace());
         System.exit(1);
     }
     

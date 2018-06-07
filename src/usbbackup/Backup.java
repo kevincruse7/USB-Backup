@@ -33,7 +33,7 @@ public class Backup
         createAndModify(); //puts the files onto the hard drive and saves them with .BAk
         changeExtension(); //changes the extensions back to normal if the above executes without issue
         changeModified(); //changes the last modified time to match the files on the usb
-        Platform.runLater(() -> Main.setStatus("Backup complete."));
+        Platform.runLater(() -> Main.setStatus("Ready."));
     }
     
     /*

@@ -2,7 +2,6 @@ package usbbackup;
 
 //Java Swing and JavaFX imports
 import java.awt.AWTException;
-import java.awt.event.ActionEvent;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
 import java.awt.SystemTray;
@@ -10,7 +9,6 @@ import java.awt.Toolkit;
 import java.awt.TrayIcon;
 import javafx.application.Platform;
 import javafx.stage.Stage;
-import javax.imageio.ImageIO;
 
 /**
  *  Controller for system tray icon.
