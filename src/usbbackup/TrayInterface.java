@@ -1,51 +1,61 @@
-/*
- * 
- */
-
 package usbbackup;
 
-//
+//Java Swing and JavaFX imports
 import java.awt.AWTException;
-import java.awt.Image;
+import java.awt.event.ActionEvent;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
 import java.awt.SystemTray;
 import java.awt.Toolkit;
 import java.awt.TrayIcon;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.stage.Stage;
+import javax.imageio.ImageIO;
 
 /**
- * 
+ *  Controller for system tray icon.
  * 
  * @author   Kevin Cruse
- * @version  Alpha
+ * @version  1.0
  */
 public class TrayInterface
 {
-    private TrayIcon trayIcon;  //
+    private Stage stage;
+    private SystemTray tray;
+    private TrayIcon trayIcon;
     
     /**
-     * 
+     *  Setup system tray icon.
      */
-    public TrayInterface(Stage stage) throws AWTException
+    public TrayInterface(Stage s) throws AWTException
     {
-        SystemTray tray = SystemTray.getSystemTray();
+        stage = s;
+        tray = SystemTray.getSystemTray();
         
+        //Create popup menu
         PopupMenu menu = new PopupMenu();
         MenuItem open = new MenuItem("Open");
         MenuItem exit = new MenuItem("Exit");
         
-        open.addActionListener(e -> stage.show());
+        //Add action listeners to menu options
+        open.addActionListener(e -> Platform.runLater(() -> stage.show()));
         exit.addActionListener(e -> Platform.exit());
         menu.add(open);
         menu.add(exit);
         
-        trayIcon = new TrayIcon(Toolkit.getDefaultToolkit().getImage("/resources/icon.png"), "USB Backup", menu);
+        //Set tray icon
+        trayIcon = new TrayIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("../resources/icon.png")), "USB Backup", menu);
         trayIcon.setImageAutoSize(true);
-        trayIcon.addActionListener(e -> stage.show());
         
+        //Add icon to tray
         tray.add(trayIcon);
+    }
+    
+    /**
+     *  Remove system tray icon.
+     */
+    public void close()
+    {
+        tray.remove(trayIcon);
     }
 }

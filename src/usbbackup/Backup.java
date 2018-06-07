@@ -5,6 +5,8 @@ import java.io.*;
 import java.nio.file.*;
 import java.nio.file.attribute.FileTime;
 
+import javafx.application.Platform;
+
 /**
  * Class takes care of backing up the files with built in recovery
  * 
@@ -24,12 +26,14 @@ public class Backup
      */
     public void run() throws IOException
     {
+        Platform.runLater(() -> Main.setStatus("Backing up..."));
         initialize(); //initialize files to be backed up
         checkIfBackup(); //sees which files need to be backed up
         createDirs(); //creates the directories that are missing from the structure
         createAndModify(); //puts the files onto the hard drive and saves them with .BAk
         changeExtension(); //changes the extensions back to normal if the above executes without issue
         changeModified(); //changes the last modified time to match the files on the usb
+        Platform.runLater(() -> Main.setStatus("Backup complete."));
     }
     
     /*

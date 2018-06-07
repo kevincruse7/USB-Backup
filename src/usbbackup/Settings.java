@@ -25,7 +25,7 @@ public class Settings
     public static File getDirectory() throws IOException
     {
         //reads the first line of the settings file
-        BufferedReader bufferedReader = new BufferedReader(new FileReader("settings.txt"));
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(Settings.class.getResource("settings.txt").toString().substring(6)));
         String directory = bufferedReader.readLine();
         File fileDirectory = new File(directory);
         
@@ -42,7 +42,7 @@ public class Settings
         List<File> oldSettings = new ArrayList<>();
         oldSettings = getFiles(); //arraylist of settings folder
         
-        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("settings.txt"));
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(Settings.class.getResource("settings.txt").toString().substring(6)));
         
         //remove first thing in settings
         oldSettings.remove(0);
@@ -53,7 +53,10 @@ public class Settings
         for (File data: oldSettings)
         {
             bufferedWriter.append(data.toString());
+            bufferedWriter.newLine();
         }
+        
+        bufferedWriter.close();
     }
     
     /**
@@ -65,7 +68,7 @@ public class Settings
     {
         //backs up specific file objects passed         
         //write to text file
-        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("settings.txt",true));
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(Settings.class.getResource("settings.txt").toString().substring(6), true));
         
         //traverse list of file objects and write each one to the settings file
         for (File item : files)
@@ -74,9 +77,9 @@ public class Settings
             bufferedWriter.newLine();
         }
         
-        bufferedWriter.newLine();
         bufferedWriter.close();
     }
+    
     /**
      * removes all the files from settings that are passed
      * @param a list of file objects that should be removed
@@ -87,7 +90,7 @@ public class Settings
         List<File> oldSettings = new ArrayList<>();
         oldSettings = getFiles();
         
-        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("settings.txt"));
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(Settings.class.getResource("settings.txt").toString().substring(6)));
         
         
         //compare list to oldSettings looking for things to remove
@@ -113,7 +116,7 @@ public class Settings
         //gets all the file names from settings file and puts it in list, if none returns null
         //if file reader fails it will throw exception
         List<File> names = new ArrayList<>();
-        BufferedReader bufferedReader = new BufferedReader(new FileReader("settings.txt"));
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(Settings.class.getResource("settings.txt").toString().substring(6)));
         String line = null;
         
         line = bufferedReader.readLine();
