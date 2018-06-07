@@ -138,8 +138,12 @@ public class UserInterface
             //Create copy of list for reference when recursively searching directories
             copy = new LinkedList<>();
             for (File item : files)
-                searchDir(item, copy);
+                if (item.isDirectory())
+                    searchDir(item, copy);
+                else
+                    copy.add(item);
             files = copy;
+            files.sort((obj1, obj2) -> obj1.toString().compareTo(obj2.toString()));
             
             //Convert files to strings for display in ListView
             for (File item : files)

@@ -1,1 +1,4 @@
-temp
+C:\Users\kevin\Desktop\usb
+D:\System Volume Information\IndexerVolumeGuid
+D:\System Volume Information\WPSettings.dat
+D:\test.txt
