@@ -9,6 +9,8 @@ doc/
 *.ctxt
 package.bluej
 README.txt
+settings.txt
 
 # MacOS directory files
 .DS_Store
+
