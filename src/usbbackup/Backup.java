@@ -4,7 +4,7 @@ import java.util.*;
 import java.io.*;
 import java.nio.file.*;
 import java.nio.file.attribute.FileTime;
-
+import org.apache.commons.io.FileUtils;
 import javafx.application.Platform;
 
 /**
@@ -31,8 +31,8 @@ public class Backup
         checkIfBackup(); //sees which files need to be backed up
         createDirs(); //creates the directories that are missing from the structure
         createAndModify(); //puts the files onto the hard drive and saves them with .BAk
-        //changeExtension(); //changes the extensions back to normal if the above executes without issue
-        //changeModified(); //changes the last modified time to match the files on the usb
+        changeExtension(); //changes the extensions back to normal if the above executes without issue
+        changeModified(); //changes the last modified time to match the files on the usb
         Platform.runLater(() -> Main.setStatus("Ready."));
     }
     
@@ -82,6 +82,7 @@ public class Backup
                 }
             }
          }
+         System.out.println("Create directories finished");
     }
     
     /*
@@ -103,18 +104,16 @@ public class Backup
         { 
            currentUSB = (File)iter.next();
            filePath = currentUSB.toPath(); //puts the full directory into the usb
-           if(filePath.getNameCount() > 1)
+           if(filePath.getNameCount() > 0)
             {
                 root = filePath.getRoot().toString(); //say the file is E:\User\text.txt it will hold E:
                 dir = filePath.subpath(0, (filePath.getNameCount())).toString(); //gets up to file so say the file is E:\User\text.txt it gets E:\User
                 dir = backupDirectory.getAbsolutePath().toString() + File.separator + dir;
-                //System.out.println(dir);
                 filePath = Paths.get(dir); //makes the string into an actual path
-           
+                
                if (Files.exists(filePath)) //if the file trying to be backed up on the hard drive exists
                {
                    currentHD = filePath.toFile(); //put that file into a File reference
-                   
                    if (currentUSB.lastModified() == currentHD.lastModified()) //check if the modified date on both files match
                    {
                        iter.remove(); //if they do match there is no need to back it up so just remove it from the local list
@@ -122,6 +121,7 @@ public class Backup
                }
             }
         }
+        System.out.println("Check if backup finished");
     }
     
     /*
@@ -139,24 +139,26 @@ public class Backup
         Iterator fileListIter = listOfFiles.iterator(); //iterator to traverse through the list of files to back up
         Path filePath; //intermediate between File objects and Strings
         Iterator filesCreatedIter = filesCreated.iterator(); //iterator for the list that keeps track of the files created, will be used in an event of an error or just to go through and change the names
+        FileOutputStream destination;
         
         fileListIter.next();
         while (fileListIter.hasNext())
         { 
            currentUSB = (File)fileListIter.next();
            filePath = currentUSB.toPath(); //puts the full directory into the usb
-           if(filePath.getNameCount() > 1)
+           if(filePath.getNameCount() > 0)
             {
                 root = filePath.getRoot().toString(); //say the file is E:\User\text.txt it will hold E:
                 dir = filePath.subpath(0, (filePath.getNameCount())).toString(); //gets up to file so say the file is E:\User\text.txt it gets E:\User
                 dir = backupDirectory.getAbsolutePath().toString() + File.separator + dir + ".BAK";
-                System.out.println(dir + " " + currentUSB.toPath());
                 filePath = Paths.get(dir); //makes the string into an actual path
            
                try
                {
                    filesCreated.add(Files.createFile(filePath)); //creates a blank .BAK file on hard drive and adds the path to a linked list storing all the paths
-                   Files.copy(currentUSB.toPath(), new FileOutputStream(filePath.toFile())); //copies file from the usb to the just made backup
+                   destination = new FileOutputStream(filePath.toFile());
+                   Files.copy(currentUSB.toPath(), destination); //copies file from the usb to the just made backup
+                   destination.close();
                }
                catch (IOException e) //if an exception is caught then the program will delete all the .BAK files created and tell the user an error occured and for right now crash the program
                {
@@ -178,6 +180,7 @@ public class Backup
                }
             }
         }
+        System.out.println("Create and modify finished");
     }
     
     /*
@@ -187,7 +190,7 @@ public class Backup
     {
         String copyStr; //String that will hold the path of the file to copy once the file path has been worked out
         Path copyPath, curPath; //holds the actual path of the file to copy the .BAK to
-        File curFile;
+        File curFile, copyFile;
         Iterator filesCreatedIter = filesCreated.iterator(); //iterator for the files created used to help copy and delete the bak
         
         while (filesCreatedIter.hasNext())
@@ -196,18 +199,19 @@ public class Backup
             copyStr = curPath.toString();
             copyStr = copyStr.substring(0, copyStr.indexOf(".BAK")); //removes the .BAK from the string
             copyPath = Paths.get(copyStr); //puts the string into the path
-            curFile = curPath.toFile();
+            copyFile = new File(copyPath.toString());
             
-            //try
-            //{
-                Files.move(curPath, copyPath);  
-                //System.out.println(curFile);
-            //}
-            /*catch (IOException e)
+            try
             {
-                throw new IOException("Faled to copy contents of .BAK files to destination files and remove the .BAK files");
-            }*/
+                Files.deleteIfExists(copyPath);
+                FileUtils.moveFile(curPath.toFile(), copyPath.toFile()); //delete the .bak
+            }
+            catch (org.apache.commons.io.FileExistsException e)
+            {
+                
+            }
         }
+        System.out.println("Change Extension finished");
     }
     
     /*
@@ -219,10 +223,12 @@ public class Backup
     {
         Iterator filesTargetIter = filesCreated.iterator(), filesSourceIter = listOfFiles.iterator();
         Path filesTargetPath, filesSourcePath;
+        filesSourceIter.next();
         
         while (filesTargetIter.hasNext()) 
         {
             filesTargetPath = (Path)filesTargetIter.next();
+            filesTargetPath = Paths.get((filesTargetPath.toString().substring(0, filesTargetPath.toString().indexOf(".BAK")))); //compact line removes .BAK from file extension
             filesSourcePath = ((File)filesSourceIter.next()).toPath();
             
             try
@@ -248,5 +254,6 @@ public class Backup
                 throw new IOException("Failed to set last modified date for the files from the usb");
             }
         }
+        System.out.println("Change modified finished");
     }
 }
