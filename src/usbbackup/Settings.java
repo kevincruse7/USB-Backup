@@ -26,7 +26,7 @@ public class Settings
     public static File getDirectory() throws IOException, URISyntaxException
     {
         //reads the first line of the settings file
-        BufferedReader bufferedReader = new BufferedReader(new FileReader(Settings.class.getProtectionDomain().getCodeSource().getLocation().toURI().toString().substring(6) + "/settings.txt"));
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(new File(Settings.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile().toString() + "/settings.txt"));
         String directory = bufferedReader.readLine();
         File fileDirectory = new File(directory);
         
@@ -43,7 +43,7 @@ public class Settings
         List<File> oldSettings = new ArrayList<>();
         oldSettings = getFiles(); //arraylist of settings folder
         
-        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(Settings.class.getProtectionDomain().getCodeSource().getLocation().toURI().toURL().toString().substring(6) + "/settings.txt"));
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(new File(Settings.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile().toString() + "/settings.txt"));
         
         //remove first thing in settings
         oldSettings.remove(0);
@@ -69,7 +69,7 @@ public class Settings
     {
         //backs up specific file objects passed         
         //write to text file
-        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(Settings.class.getProtectionDomain().getCodeSource().getLocation().toURI().toURL().toString().substring(6) + "/settings.txt", true));
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(new File(Settings.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile().toString() + "/settings.txt", true));
         
         //traverse list of file objects and write each one to the settings file
         for (File item : files)
@@ -91,7 +91,7 @@ public class Settings
         List<File> oldSettings = new ArrayList<>();
         oldSettings = getFiles();
         
-        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(Settings.class.getProtectionDomain().getCodeSource().getLocation().toURI().toURL().toString().substring(6) + "/settings.txt"));
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(new File(Settings.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile().toString() + "/settings.txt"));
         
         
         //compare list to oldSettings looking for things to remove
@@ -117,7 +117,7 @@ public class Settings
         //gets all the file names from settings file and puts it in list, if none returns null
         //if file reader fails it will throw exception
         List<File> names = new ArrayList<>();
-        BufferedReader bufferedReader = new BufferedReader(new FileReader(Settings.class.getProtectionDomain().getCodeSource().getLocation().toURI().toURL().toString().substring(6) + "/settings.txt"));
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(new File(Settings.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile().toString() + "/settings.txt"));
         String line = null;
         
         line = bufferedReader.readLine();

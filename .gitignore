@@ -9,7 +9,6 @@ doc/
 *.ctxt
 package.bluej
 README.txt
-src/usbbackup/settings.txt
 
 
 # MacOS directory files
