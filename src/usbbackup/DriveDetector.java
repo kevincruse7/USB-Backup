@@ -69,7 +69,7 @@ public class DriveDetector implements IUSBDriveListener
                 else
                     Platform.runLater(() -> Main.setStatus("New drive detected."));
             }
-            catch (IOException e)
+            catch (Exception e)
             {
                 Main.exit("trying to backup USB drive", e);
             }

@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Created-By: 10.0.1 (Oracle Corporation)
+
+Class-Path: libraries\slf4j-api-1.7.25.jar;libaries\slf4j-simple-1.7.25.jar;libraries\usbdrivedetector-2.0.4.jar;src
+Main-Class: usbbackup.Main

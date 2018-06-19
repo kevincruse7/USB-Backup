@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 /**
@@ -22,10 +23,10 @@ public class Settings
      * just the first line of the settings file 
      * @return the directory where the backups should be stored
      */
-    public static File getDirectory() throws IOException
+    public static File getDirectory() throws IOException, URISyntaxException
     {
         //reads the first line of the settings file
-        BufferedReader bufferedReader = new BufferedReader(new FileReader(Settings.class.getResource("settings.txt").toString().substring(6)));
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(Settings.class.getProtectionDomain().getCodeSource().getLocation().toURI().toString().substring(6) + "/settings.txt"));
         String directory = bufferedReader.readLine();
         File fileDirectory = new File(directory);
         
@@ -36,13 +37,13 @@ public class Settings
      * changes the directory to what is passed
      * @param the new directory
      */
-    public static void setDirectory(File dir) throws IOException
+    public static void setDirectory(File dir) throws IOException, URISyntaxException
     {
         //changes the first line in the settings file
         List<File> oldSettings = new ArrayList<>();
         oldSettings = getFiles(); //arraylist of settings folder
         
-        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(Settings.class.getResource("settings.txt").toString().substring(6)));
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(Settings.class.getProtectionDomain().getCodeSource().getLocation().toURI().toURL().toString().substring(6) + "/settings.txt"));
         
         //remove first thing in settings
         oldSettings.remove(0);
@@ -64,11 +65,11 @@ public class Settings
      * adds the sent files to the settings file
      * @param a list of file objects to add
      */
-    public static void addFiles(List<File> files) throws IOException
+    public static void addFiles(List<File> files) throws IOException, URISyntaxException
     {
         //backs up specific file objects passed         
         //write to text file
-        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(Settings.class.getResource("settings.txt").toString().substring(6), true));
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(Settings.class.getProtectionDomain().getCodeSource().getLocation().toURI().toURL().toString().substring(6) + "/settings.txt", true));
         
         //traverse list of file objects and write each one to the settings file
         for (File item : files)
@@ -84,13 +85,13 @@ public class Settings
      * removes all the files from settings that are passed
      * @param a list of file objects that should be removed
      */
-    public static void removeFiles(List<File> files) throws IOException
+    public static void removeFiles(List<File> files) throws IOException, URISyntaxException
     {
         //read in from settings file and put it into an arraylist of file objects
         List<File> oldSettings = new ArrayList<>();
         oldSettings = getFiles();
         
-        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(Settings.class.getResource("settings.txt").toString().substring(6)));
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(Settings.class.getProtectionDomain().getCodeSource().getLocation().toURI().toURL().toString().substring(6) + "/settings.txt"));
         
         
         //compare list to oldSettings looking for things to remove
@@ -111,12 +112,12 @@ public class Settings
      * gets all the files from the settings file
      * @return a list of file objects containing the files from settings
      */
-    public static List<File> getFiles() throws IOException
+    public static List<File> getFiles() throws IOException, URISyntaxException
     {
         //gets all the file names from settings file and puts it in list, if none returns null
         //if file reader fails it will throw exception
         List<File> names = new ArrayList<>();
-        BufferedReader bufferedReader = new BufferedReader(new FileReader(Settings.class.getResource("settings.txt").toString().substring(6)));
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(Settings.class.getProtectionDomain().getCodeSource().getLocation().toURI().toURL().toString().substring(6) + "/settings.txt"));
         String line = null;
         
         line = bufferedReader.readLine();

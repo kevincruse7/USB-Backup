@@ -57,7 +57,7 @@ public class PathItem extends ListCell<String>
         {
             Settings.removeFiles(file);
         }
-        catch (IOException e)
+        catch (Exception e)
         {
             Main.exit("removing files from \'settings.txt\'", e);
         }

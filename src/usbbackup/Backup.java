@@ -24,7 +24,7 @@ public class Backup
      * @param none
      * @return boolean that returns true if the backup process executed without issue
      */
-    public void run() throws IOException
+    public void run() throws Exception
     {
         Platform.runLater(() -> Main.setStatus("Backing up..."));
         initialize(); //initialize files to be backed up
@@ -39,7 +39,7 @@ public class Backup
     /*
      * Method takes care of initializing static field elements in class
      */
-    private void initialize() throws IOException
+    private void initialize() throws Exception
     {
         backupDirectory = Settings.getDirectory(); //gets the directory of where to put all the backed up files
         listOfFiles = Settings.getFiles(); //linked list to store a copy of all the files passed from the Settings class
@@ -49,7 +49,7 @@ public class Backup
     /*
      * Method takes care of creating the folder hierarchy inside the destination folder to maintain the higherarchy that is in the usb
      */
-    private void createDirs() throws IOException
+    private void createDirs() throws Exception
     {
          String dir, testDir; //holds the directory to try and create
          String root; //holds the root to be removed from the path
@@ -131,7 +131,7 @@ public class Backup
      * and if the method can fully execute without catching any exceptions the method finishes, if an exception occurs
      * all of the backups are deleted and the method throws an exception.
      */
-    private void createAndModify() throws IOException
+    private void createAndModify() throws Exception
     {
         String dir; //holds the directory to try and create
         String root; //holds the root to be removed from the path
@@ -186,7 +186,7 @@ public class Backup
     /*
      * This method takes care of deleting all the .BAK files and copying the contents of the BAK into the original before it gets deleted
      */
-    private void changeExtension() throws IOException
+    private void changeExtension() throws Exception
     {
         String copyStr; //String that will hold the path of the file to copy once the file path has been worked out
         Path copyPath, curPath; //holds the actual path of the file to copy the .BAK to
@@ -219,7 +219,7 @@ public class Backup
      * if an exception is caught it will change all the times to match the beginning of the epoch so that all the files will be
      * re backed up next time it's plugged in
      */
-    private void changeModified() throws IOException
+    private void changeModified() throws Exception
     {
         Iterator filesTargetIter = filesCreated.iterator(), filesSourceIter = listOfFiles.iterator();
         Path filesTargetPath, filesSourcePath;

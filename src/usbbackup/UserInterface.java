@@ -2,7 +2,6 @@ package usbbackup;
 
 //Java libraries
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -56,7 +55,7 @@ public class UserInterface
             paths.remove(0);
             driveView.getItems().addAll(paths);
         }
-        catch (IOException e)
+        catch (Exception e)
         {
             Main.exit("reading paths from \'settings.txt\'", e);
         }
@@ -80,7 +79,7 @@ public class UserInterface
         {
             backup.run();
         }
-        catch (IOException e)
+        catch (Exception e)
         {
             Main.exit("backing up USB drive", e);
         }
@@ -105,7 +104,7 @@ public class UserInterface
             {
                 Settings.setDirectory(directory);
             }
-            catch (IOException e)
+            catch (Exception e)
             {
                 Main.exit("setting the backup directory", e);
             }
@@ -155,7 +154,7 @@ public class UserInterface
                 if (Settings.getFiles() != null && !Settings.getFiles().containsAll(files))
                     Settings.addFiles(files);
             }
-            catch (IOException e)
+            catch (Exception e)
             {
                 Main.exit("trying to add drive paths to \'settings.txt\'", e);
             }
@@ -190,7 +189,7 @@ public class UserInterface
                 if (Settings.getFiles() != null && !Settings.getFiles().containsAll(files))
                     Settings.addFiles(files);
             }
-            catch (IOException e)
+            catch (Exception e)
             {
                 Main.exit("trying to add file paths to \'settings.txt\'", e);
             }
