@@ -9,7 +9,8 @@ doc/
 *.ctxt
 package.bluej
 README.txt
-settings.txt
+src/usbbackup/settings.txt
+
 
 # MacOS directory files
 .DS_Store
