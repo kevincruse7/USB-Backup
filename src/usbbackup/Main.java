@@ -115,10 +115,10 @@ public class Main extends Application
      */
     private void initStage() throws IOException
     {
-        Parent root = FXMLLoader.load(getClass().getResource("../resources/interface.fxml"));
+        Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("resources/interface.fxml"));
         
         stage.setTitle("USB Backup");
-        stage.getIcons().add(new Image(getClass().getResource("../resources/icon.png").toString()));
+        stage.getIcons().add(new Image(getClass().getClassLoader().getResource("resources/icon.png").toString()));
         stage.setScene(new Scene(root, 490, 235));
         stage.setResizable(false);
     }

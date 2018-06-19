@@ -42,7 +42,7 @@ public class TrayInterface
         menu.add(exit);
         
         //Set tray icon
-        trayIcon = new TrayIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("../resources/icon.png")), "USB Backup", menu);
+        trayIcon = new TrayIcon(Toolkit.getDefaultToolkit().getImage(getClass().getClassLoader().getResource("resources/icon.png")), "USB Backup", menu);
         trayIcon.setImageAutoSize(true);
         
         //Add icon to tray
